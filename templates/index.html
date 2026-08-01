@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row g-3 align-items-stretch">
+  <div class="col-12">
+    <div class="p-3 p-md-4 rounded-3 bg-white shadow-sm">
+      <h1 class="h4 mb-2">تشغيل مشروع المتاهة على الويب 🚀</h1>
+      <p class="mb-0 text-muted">
+        هنا تستطيع تشغيل الـ GA للبحث عن أفضل معاملات توليد المتاهة، أو تجربة Genome يدوي وتوليد متاهة واحدة مع حل A*.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h5">1) تشغيل Genetic Algorithm (GA)</h2>
+        <p class="text-muted small mb-3">
+          ملاحظة: زيادة <span class="badge text-bg-secondary">Population</span> أو <span class="badge text-bg-secondary">Generations</span> ستزيد وقت التشغيل.
+        </p>
+
+        <form method="post" action="{{ url_for('run_ga') }}">
+          <div class="row g-2">
+            <div class="col-12">
+              <label class="form-label">Preset</label>
+              <select class="form-select" id="preset">
+                <option value="balanced" selected>متوازن (مقترح)</option>
+                <option value="fast">سريع للعرض</option>
+                <option value="quality">جودة أعلى (أبطأ)</option>
+              </select>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Maze Size (Odd)</label>
+              <input class="form-control" type="number" name="size" id="ga_size" value="{{ defaults.size }}" min="7" max="151" step="2">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Seed</label>
+              <input class="form-control" type="number" name="seed" id="ga_seed" value="{{ defaults.seed }}">
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Population</label>
+              <input class="form-control" type="number" name="population_size" id="ga_pop" value="{{ defaults.population_size }}" min="5" max="500">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Generations</label>
+              <input class="form-control" type="number" name="generations" id="ga_gens" value="{{ defaults.generations }}" min="1" max="500">
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Tournament k</label>
+              <input class="form-control" type="number" name="tournament_k" id="ga_k" value="{{ defaults.tournament_k }}" min="2" max="20">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Elites</label>
+              <input class="form-control" type="number" name="elite" id="ga_elite" value="{{ defaults.elite }}" min="0" max="50">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Mutation prob per gene (p_mut_gene)</label>
+              <input class="form-control" type="number" name="p_mut_gene" id="ga_mut" value="{{ defaults.p_mut_gene }}" min="0" max="1" step="0.01">
+            </div>
+
+            <div class="col-12 mt-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="allow_diagonal" id="ga_diag">
+                <label class="form-check-label" for="ga_diag">
+                  السماح بالحركة القُطرية في A* (اختياري)
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 mt-3 d-grid">
+              <button class="btn btn-primary" type="submit">تشغيل GA</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer small text-muted">
+        Tip: جرّب Size=21 + Pop=20 + Gens=20 إذا تريد تجربة سريعة.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h5">2) توليد متاهة واحدة (Manual Genome)</h2>
+        <p class="text-muted small mb-3">
+          هنا نختار معاملات الجينوم يدويًا ونشوف شكل المتاهة ومسار A* مباشرة.
+        </p>
+
+        <form method="post" action="{{ url_for('generate_one') }}">
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label">Maze Size (Odd)</label>
+              <input class="form-control" type="number" name="size_single" value="{{ defaults.size }}" min="7" max="151" step="2">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Genome Seed</label>
+              <input class="form-control" type="number" name="genome_seed" value="{{ defaults.genome_seed }}">
+            </div>
+
+            <div class="col-4">
+              <label class="form-label">corridor_bias</label>
+              <input class="form-control" type="number" name="corridor_bias" value="{{ defaults.corridor_bias }}" min="0" max="1" step="0.01">
+            </div>
+            <div class="col-4">
+              <label class="form-label">goal_bias</label>
+              <input class="form-control" type="number" name="goal_bias" value="{{ defaults.goal_bias }}" min="0" max="1" step="0.01">
+            </div>
+            <div class="col-4">
+              <label class="form-label">loopiness</label>
+              <input class="form-control" type="number" name="loopiness" value="{{ defaults.loopiness }}" min="0" max="0.25" step="0.01">
+            </div>
+
+            <div class="col-12 mt-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="allow_diagonal_single" id="single_diag">
+                <label class="form-check-label" for="single_diag">
+                  السماح بالحركة القُطرية في A*
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 mt-3 d-grid">
+              <button class="btn btn-outline-primary" type="submit">توليد المتاهة</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer small text-muted">
+        فكرة: قلّل goal_bias لو تريد متاهة أصعب (عادة).
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

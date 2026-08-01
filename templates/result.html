@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+  <div>
+    <h1 class="h4 mb-1">{{ title }}</h1>
+    <div class="text-muted small">
+      Run ID: <span class="font-monospace">{{ summary.run_id }}</span>
+      <span class="mx-2">•</span>
+      Runtime: <span class="font-monospace">{{ summary.runtime_sec }}s</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('index') }}">تشغيل مرة ثانية</a>
+    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('output_file', run_id=summary.run_id, filename='run_summary.json') }}">تحميل run_summary.json</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-12 col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">الصور 📷</h2>
+
+        {% if mode == "ga" %}
+          <div class="mb-3">
+            <div class="small text-muted mb-2">Best maze + solution</div>
+            <img class="img-fluid rounded border" alt="best_maze_solution" src="{{ url_for('output_file', run_id=summary.run_id, filename='best_maze_solution.png') }}">
+          </div>
+
+          <div class="mb-3">
+            <div class="small text-muted mb-2">Best maze (walls/free)</div>
+            <img class="img-fluid rounded border" alt="best_maze" src="{{ url_for('output_file', run_id=summary.run_id, filename='best_maze.png') }}">
+          </div>
+
+          <div class="mb-2">
+            <div class="small text-muted mb-2">Fitness curve</div>
+            <img class="img-fluid rounded border" alt="fitness_curve" src="{{ url_for('output_file', run_id=summary.run_id, filename='fitness_curve.png') }}">
+          </div>
+        {% else %}
+          <div class="mb-3">
+            <div class="small text-muted mb-2">Maze + solution</div>
+            <img class="img-fluid rounded border" alt="maze_solution" src="{{ url_for('output_file', run_id=summary.run_id, filename='maze_solution.png') }}">
+          </div>
+          <div class="mb-2">
+            <div class="small text-muted mb-2">Maze</div>
+            <img class="img-fluid rounded border" alt="maze" src="{{ url_for('output_file', run_id=summary.run_id, filename='maze.png') }}">
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6">الملخص 🧾</h2>
+
+        {% if mode == "ga" %}
+          <div class="mb-2">
+            <span class="badge text-bg-dark">Best Fitness</span>
+            <span class="font-monospace">{{ summary.best.fitness }}</span>
+          </div>
+
+          <h3 class="h6 mt-3">Parameters</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                {% for k, v in summary.params.items() %}
+                  <tr><th class="text-muted" style="width: 55%">{{ k }}</th><td class="font-monospace">{{ v }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="h6 mt-3">Best Genome</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                {% for k, v in summary.best.genome.items() %}
+                  <tr><th class="text-muted" style="width: 55%">{{ k }}</th><td class="font-monospace">{{ v }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="h6 mt-3">Best Stats</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                {% for k, v in summary.best.stats.items() %}
+                  <tr><th class="text-muted" style="width: 55%">{{ k }}</th><td class="font-monospace">{{ v }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('output_file', run_id=summary.run_id, filename='history.json') }}">history.json</a>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('output_file', run_id=summary.run_id, filename='history.csv') }}">history.csv</a>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('output_file', run_id=summary.run_id, filename='best_genome.json') }}">best_genome.json</a>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('output_file', run_id=summary.run_id, filename='best_stats.json') }}">best_stats.json</a>
+          </div>
+
+        {% else %}
+          <h3 class="h6">Genome</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                {% for k, v in summary.genome.items() %}
+                  <tr><th class="text-muted" style="width: 55%">{{ k }}</th><td class="font-monospace">{{ v }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="h6 mt-3">A* Result</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                {% for k, v in summary.a_star.items() %}
+                  <tr><th class="text-muted" style="width: 55%">{{ k }}</th><td class="font-monospace">{{ v }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="h6 mt-3">Maze Metrics</h3>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                {% for k, v in summary.maze_metrics.items() %}
+                  <tr><th class="text-muted" style="width: 55%">{{ k }}</th><td class="font-monospace">{{ v }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">المخرجات 📁</h2>
+        <ul class="list-unstyled mb-0">
+          {% for f in summary.outputs %}
+            <li class="mb-1">
+              <a href="{{ url_for('output_file', run_id=summary.run_id, filename=f) }}" class="link-primary">
+                <span class="font-monospace">{{ f }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

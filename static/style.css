@@ -1,0 +1,24 @@
+:root {
+  --card-radius: 14px;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", "Noto Sans", Arial, sans-serif;
+}
+
+.card {
+  border-radius: var(--card-radius);
+}
+
+img {
+  background: #fff;
+}
+
+.font-monospace {
+  direction: ltr;
+  display: inline-block;
+}
+
+.table th {
+  font-weight: 600;
+}
