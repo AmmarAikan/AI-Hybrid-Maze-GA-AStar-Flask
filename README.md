@@ -70,3 +70,11 @@ python app.py
 - **توليد متاهة واحدة** بمدخلات Genome يدويًا (corridor_bias / goal_bias / loopiness / seed) ثم عرض المتاهة ومسار A*.
 
 > سيتم حفظ مخرجات كل تشغيل داخل مجلد `web_outputs/` بشكل تلقائي (Run ID منفصل لكل تشغيل).
+
+## Author
+
+**Ammar Aikan** — Cybersecurity Student & Security Researcher
+
+## Rights
+
+© 2026 Ammar Aikan. All Rights Reserved. See [COPYRIGHT.md](COPYRIGHT.md).
