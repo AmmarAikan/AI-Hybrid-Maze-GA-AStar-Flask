@@ -1,0 +1,52 @@
+name: Maze smoke test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install --requirement requirements.txt
+
+      - name: Run bounded deterministic smoke test
+        run: >-
+          python main.py --size 11 --pop 6 --gens 2 --seed 7
+          --out "${RUNNER_TEMP}/maze-output"
+
+      - name: Verify documented output files
+        shell: bash
+        run: |
+          output_dir="${RUNNER_TEMP}/maze-output"
+          for file in \
+            best_maze.png \
+            best_maze_solution.png \
+            fitness_curve.png \
+            history.csv \
+            history.json \
+            best_genome.json \
+            best_stats.json; do
+            test -s "${output_dir}/${file}"
+          done
+          python -m json.tool "${output_dir}/best_stats.json" >/dev/null
